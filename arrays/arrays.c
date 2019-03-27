@@ -95,8 +95,7 @@ char *arr_read(Array *arr, int index) {
   // Throw an error if the index is greater than the current count
   if (index >= arr->count)
   {
-    errno = EFAULT;
-    perror("Index out of bounds.");
+    fprintf(stderr, "Index %s outside of array bounds.", index);
     return NULL;
   }
 
@@ -113,8 +112,7 @@ void arr_insert(Array *arr, char *element, int index) {
   // Throw an error if the index is greater than the current count
   if (index > arr->count)
   {
-    errno = EFAULT;
-    perror("Index out of bounds.");
+    fprintf(stderr, "Index %s out of array bounds.", index);
     return;
   }
 
@@ -173,12 +171,12 @@ void arr_remove(Array *arr, char *element) {
     {
       found = i;
       free(*(arr->elements + i));
+      break;
     }
   }
   if (found < 0)
   {
-    errno = EDOM;
-    perror("Desired element not found in array.");
+    fprintf(stderr, "Element %s not found in array.", element);
     return;
   }
 
@@ -187,6 +185,7 @@ void arr_remove(Array *arr, char *element) {
   {
     *(arr->elements + i) = *(arr->elements + i + 1);
   }
+  free(*(arr->elements + arr->count));
 
   // Decrement count by 1
   arr->count -= 1;
